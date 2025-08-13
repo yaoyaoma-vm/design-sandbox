@@ -133,6 +133,16 @@ export default function AIPrototypePage() {
             <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
             Test Deployment Active
           </motion.div>
+          
+          {/* Deployment Status Indicator */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-2 text-xs text-gray-400"
+          >
+            🚀 Firebase deployment verified - {new Date().toLocaleDateString()}
+          </motion.div>
         </motion.div>
 
         {/* Main Content */}
