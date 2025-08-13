@@ -122,6 +122,17 @@ export default function AIPrototypePage() {
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Interactive AI-powered interface prototype with machine learning components and intelligent interactions
           </p>
+          
+          {/* Test Deployment Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-green-500 to-emerald-600 text-white border border-green-400/30"
+          >
+            <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+            Test Deployment Active
+          </motion.div>
         </motion.div>
 
         {/* Main Content */}
