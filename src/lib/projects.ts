@@ -42,16 +42,10 @@ export function getProjects(): Project[] {
         .join(' ');
 
       // Generate description based on folder name
-      const descriptions: Record<string, string> = {
-        'sign-up-flow': 'A modern authentication flow with form validation and smooth transitions.',
-        'nps-question': 'Interactive Net Promoter Score component with animated feedback.',
-      };
+      const descriptions: Record<string, string> = {};
 
       // Generate category based on folder name
-      const categories: Record<string, string> = {
-        'sign-up-flow': 'Authentication',
-        'nps-question': 'Feedback',
-      };
+      const categories: Record<string, string> = {};
 
       // Check if project has a metadata file
       const metadataPath = path.join(projectsDir, folder, 'project.json');
