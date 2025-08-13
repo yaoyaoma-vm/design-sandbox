@@ -1,71 +1,90 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from "next/image";
 import Link from 'next/link';
-import { ArrowLeft, Figma, Eye, Download, Share2, Heart } from 'lucide-react';
+import { ArrowLeft, Figma, Search, Filter } from 'lucide-react';
 import { animateHero } from '@/lib/animations';
-
-// Sample prototype data
-const prototypes = [
-  {
-    id: 1,
-    title: 'Mobile App Dashboard',
-    description: 'Modern dashboard design for mobile applications',
-    category: 'Mobile',
-    likes: 24,
-    views: 156,
-    thumbnail: '/api/placeholder/400/300'
-  },
-  {
-    id: 2,
-    title: 'E-commerce Checkout',
-    description: 'Streamlined checkout process with payment integration',
-    category: 'E-commerce',
-    likes: 18,
-    views: 89,
-    thumbnail: '/api/placeholder/400/300'
-  },
-  {
-    id: 3,
-    title: 'Social Media Feed',
-    description: 'Dynamic social feed with engagement features',
-    category: 'Social',
-    likes: 32,
-    views: 203,
-    thumbnail: '/api/placeholder/400/300'
-  },
-  {
-    id: 4,
-    title: 'Analytics Dashboard',
-    description: 'Data visualization and reporting interface',
-    category: 'Analytics',
-    likes: 15,
-    views: 67,
-    thumbnail: '/api/placeholder/400/300'
-  }
-];
+import { FigmaPrototypeManager, FigmaPrototype } from '@/lib/figmaPrototypes';
+import FigmaPrototypeCard from '@/components/projects/FigmaPrototypeCard';
+import AddFigmaPrototype from '@/components/projects/AddFigmaPrototype';
 
 export default function FigmaPrototypesPage() {
+  const [prototypes, setPrototypes] = useState<FigmaPrototype[]>([]);
+  const [filteredPrototypes, setFilteredPrototypes] = useState<FigmaPrototype[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [likedPrototypes, setLikedPrototypes] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [likedPrototypes, setLikedPrototypes] = useState<string[]>([]);
 
   useEffect(() => {
     animateHero();
+    loadPrototypes();
+    loadLikedPrototypes();
   }, []);
 
-  const categories = ['All', 'Mobile', 'E-commerce', 'Social', 'Analytics'];
-  const filteredPrototypes = selectedCategory === 'All' 
-    ? prototypes 
-    : prototypes.filter(p => p.category === selectedCategory);
+  useEffect(() => {
+    filterPrototypes();
+  }, [prototypes, selectedCategory, searchQuery]);
 
-  const handleLike = (id: number) => {
-    setLikedPrototypes(prev => 
-      prev.includes(id) 
-        ? prev.filter(likedId => likedId !== id)
-        : [...prev, id]
-    );
+  const loadPrototypes = () => {
+    const loaded = FigmaPrototypeManager.getPrototypes();
+    setPrototypes(loaded);
   };
+
+  const loadLikedPrototypes = () => {
+    const liked = FigmaPrototypeManager.getLikedPrototypes();
+    setLikedPrototypes(liked);
+  };
+
+  const filterPrototypes = () => {
+    let filtered = prototypes;
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(p => p.category === selectedCategory);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.title.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      );
+    }
+
+    setFilteredPrototypes(filtered);
+  };
+
+  const handleAddPrototype = (prototype: FigmaPrototype) => {
+    FigmaPrototypeManager.addPrototype(prototype);
+    loadPrototypes();
+  };
+
+  const handleRemovePrototype = (id: string) => {
+    FigmaPrototypeManager.removePrototype(id);
+    loadPrototypes();
+  };
+
+  const handleLike = (id: string) => {
+    const isLiked = FigmaPrototypeManager.toggleLike(id);
+    loadLikedPrototypes();
+    
+    // Update the prototype's like count
+    const prototype = prototypes.find(p => p.id === id);
+    if (prototype) {
+      const newLikes = isLiked ? prototype.likes + 1 : prototype.likes - 1;
+      FigmaPrototypeManager.updatePrototype(id, { likes: newLikes });
+      loadPrototypes();
+    }
+  };
+
+  const handleView = (id: string) => {
+    FigmaPrototypeManager.incrementViews(id);
+    loadPrototypes();
+  };
+
+  const categories = ['All', ...FigmaPrototypeManager.getCategories()];
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,107 +116,63 @@ export default function FigmaPrototypesPage() {
             
             {/* Subtitle */}
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Explore our collection of interactive design prototypes and mockups
+              Manage and organize your Figma prototypes in one place
             </p>
           </div>
 
-          {/* Category Filter */}
-          <div className="hero-cta mb-12">
-            <div className="flex flex-wrap justify-center gap-2">
+          {/* Add Prototype Form */}
+          <AddFigmaPrototype onAdd={handleAddPrototype} />
+
+          {/* Search and Filter */}
+          <div className="mb-8 space-y-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search prototypes..."
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                     selectedCategory === category
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
+                  <Filter className="w-3 h-3" />
                   {category}
                 </button>
               ))}
             </div>
           </div>
 
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-sm text-muted-foreground">
+              {filteredPrototypes.length} prototype{filteredPrototypes.length !== 1 ? 's' : ''} found
+            </p>
+          </div>
+
           {/* Prototypes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredPrototypes.map((prototype) => (
-              <div 
+              <FigmaPrototypeCard
                 key={prototype.id}
-                className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
-              >
-                {/* Thumbnail */}
-                <div className="relative aspect-video bg-muted overflow-hidden">
-                  <Image 
-                    src={prototype.thumbnail} 
-                    alt={prototype.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                  
-                  {/* Overlay Actions */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="flex gap-2">
-                      <button className="p-2 bg-white/90 rounded-lg hover:bg-white transition-colors">
-                        <Eye className="w-4 h-4 text-gray-700" />
-                      </button>
-                      <button className="p-2 bg-white/90 rounded-lg hover:bg-white transition-colors">
-                        <Download className="w-4 h-4 text-gray-700" />
-                      </button>
-                      <button className="p-2 bg-white/90 rounded-lg hover:bg-white transition-colors">
-                        <Share2 className="w-4 h-4 text-gray-700" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-4 space-y-3">
-                  {/* Title and Category */}
-                  <div>
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {prototype.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {prototype.category}
-                    </p>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {prototype.description}
-                  </p>
-
-                  {/* Stats and Actions */}
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Eye className="w-3 h-3" />
-                        {prototype.views}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Heart className="w-3 h-3" />
-                        {prototype.likes + (likedPrototypes.includes(prototype.id) ? 1 : 0)}
-                      </span>
-                    </div>
-                    
-                    <button
-                      onClick={() => handleLike(prototype.id)}
-                      className={`p-1.5 rounded-full transition-colors ${
-                        likedPrototypes.includes(prototype.id)
-                          ? 'text-red-500 bg-red-50'
-                          : 'text-muted-foreground hover:text-red-500 hover:bg-red-50'
-                      }`}
-                    >
-                      <Heart className={`w-4 h-4 ${
-                        likedPrototypes.includes(prototype.id) ? 'fill-current' : ''
-                      }`} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+                prototype={prototype}
+                onRemove={handleRemovePrototype}
+                onLike={handleLike}
+                isLiked={likedPrototypes.includes(prototype.id)}
+              />
             ))}
           </div>
 
@@ -206,11 +181,19 @@ export default function FigmaPrototypesPage() {
             <div className="text-center py-12">
               <Figma className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                No prototypes found
+                {prototypes.length === 0 ? 'No prototypes yet' : 'No prototypes found'}
               </h3>
-              <p className="text-muted-foreground">
-                Try selecting a different category or check back later for new designs.
+              <p className="text-muted-foreground mb-4">
+                {prototypes.length === 0 
+                  ? 'Add your first Figma prototype to get started!'
+                  : 'Try adjusting your search or filter criteria.'
+                }
               </p>
+              {prototypes.length === 0 && (
+                <div className="text-sm text-muted-foreground">
+                  <p>Paste a Figma URL above to add your first prototype</p>
+                </div>
+              )}
             </div>
           )}
         </div>
