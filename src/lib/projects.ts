@@ -10,6 +10,17 @@ export interface Project {
   thumbnail?: string;
 }
 
+interface ProjectMetadata {
+  title?: string;
+  description?: string;
+  category?: string;
+  createdAt?: string;
+  thumbnail?: string;
+  tags?: string[];
+  author?: string;
+  version?: string;
+}
+
 export function getProjects(): Project[] {
   try {
     const projectsDir = path.join(process.cwd(), 'src/app/projects');
@@ -46,7 +57,7 @@ export function getProjects(): Project[] {
 
       // Check if project has a metadata file
       const metadataPath = path.join(projectsDir, folder, 'project.json');
-      let metadata = {};
+      let metadata: ProjectMetadata = {};
       
       if (fs.existsSync(metadataPath)) {
         try {
