@@ -1,0 +1,10 @@
+{
+  "title": "Sign Up Flow",
+  "description": "A modern authentication flow with form validation and smooth transitions.",
+  "category": "Authentication",
+  "createdAt": "2024-01-15",
+  "thumbnail": "/api/placeholder/400/200",
+  "tags": ["authentication", "forms", "validation"],
+  "author": "Design Team",
+  "version": "1.0.0"
+}
