@@ -209,3 +209,26 @@ git push origin main # Deploy automatically (recommended)
 - `.firebaserc` - Project settings
 - `next.config.ts` - Build settings
 - `out/` - Static build output
+
+
+## Firebase Authentication Deprecation Notice
+
+**⚠️ Important**: The current deployment method uses Firebase CLI token authentication, which will be deprecated in a future major version of `firebase-tools`.
+
+### Current Status
+- ✅ **Working**: Current method functions perfectly
+- ⚠️ **Warning**: Deprecation notice appears during deployment
+- 🔄 **Future**: Will need to migrate to service account authentication
+
+### Migration Required (Future)
+When Firebase tools updates, we'll need to:
+1. **Generate Service Account Key**: Create new authentication method
+2. **Update GitHub Secrets**: Replace `FIREBASE_TOKEN` with `GOOGLE_APPLICATION_CREDENTIALS`
+3. **Update Workflow**: Modify GitHub Actions to use new authentication
+
+### Documentation
+- **Current Method**: `firebase deploy --token "$FIREBASE_TOKEN"`
+- **Future Method**: `firebase deploy` (with `GOOGLE_APPLICATION_CREDENTIALS` environment variable)
+- **Reference**: https://cloud.google.com/docs/authentication/getting-started
+
+**Note**: This is a future consideration and doesn't affect current functionality.
