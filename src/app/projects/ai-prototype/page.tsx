@@ -9,7 +9,7 @@ export default function AIPrototypePage() {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   const steps = [
     'Initializing AI Model',
@@ -38,7 +38,7 @@ export default function AIPrototypePage() {
 
   useEffect(() => {
     setCurrentStep(Math.floor((progress / 100) * steps.length));
-  }, [progress]);
+  }, [progress, steps.length]);
 
   const startAnimation = () => {
     setIsRunning(true);
