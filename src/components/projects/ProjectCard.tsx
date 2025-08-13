@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from "next/image";
 import { ArrowRight, Calendar, Tag } from 'lucide-react';
 
 interface ProjectCardProps {
@@ -33,10 +34,11 @@ export default function ProjectCard({
         {/* Thumbnail */}
         {thumbnail && (
           <div className="w-full h-32 bg-muted rounded-md mb-4 overflow-hidden">
-            <img 
+            <Image 
               src={thumbnail} 
               alt={title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
         )}

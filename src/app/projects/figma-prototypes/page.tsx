@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from "next/image";
 import Link from 'next/link';
 import { ArrowLeft, Figma, Eye, Download, Share2, Heart } from 'lucide-react';
 import { animateHero } from '@/lib/animations';
@@ -128,10 +129,11 @@ export default function FigmaPrototypesPage() {
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-muted overflow-hidden">
-                  <img 
+                  <Image 
                     src={prototype.thumbnail} 
                     alt={prototype.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                   
