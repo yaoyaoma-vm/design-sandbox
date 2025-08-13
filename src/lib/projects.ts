@@ -45,14 +45,12 @@ export function getProjects(): Project[] {
       const descriptions: Record<string, string> = {
         'sign-up-flow': 'A modern authentication flow with form validation and smooth transitions.',
         'nps-question': 'Interactive Net Promoter Score component with animated feedback.',
-        'figma-prototypes': 'Design prototypes gallery with interactive mockups and wireframes.',
       };
 
       // Generate category based on folder name
       const categories: Record<string, string> = {
         'sign-up-flow': 'Authentication',
         'nps-question': 'Feedback',
-        'figma-prototypes': 'Design',
       };
 
       // Check if project has a metadata file

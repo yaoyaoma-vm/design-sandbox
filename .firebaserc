@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "design-sandbox-vm"
-  }
+    "default": "design-sandbox-vm",
+    "staging": "design-sandbox-d8242"
+  },
+  "targets": {},
+  "etags": {}
 }

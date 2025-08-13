@@ -1,0 +1,10 @@
+{
+  "title": "AI Prototype",
+  "description": "Interactive AI-powered interface prototype with machine learning components and intelligent interactions.",
+  "category": "AI/ML",
+  "createdAt": "2024-12-19",
+  "thumbnail": "/api/placeholder/400/200",
+  "tags": ["AI", "Machine Learning", "Prototype", "Interactive"],
+  "author": "Design Team",
+  "version": "1.0.0"
+}
