@@ -21,6 +21,14 @@ const projects = [
     category: 'Feedback',
     createdAt: '2024-01-14',
     thumbnail: '/api/placeholder/400/200'
+  },
+  {
+    id: 'figma-prototypes',
+    title: 'Figma for Prototypes',
+    description: 'Design prototypes gallery with interactive mockups and wireframes.',
+    category: 'Design',
+    createdAt: '2024-01-16',
+    thumbnail: '/api/placeholder/400/200'
   }
 ];
 
