@@ -15,6 +15,12 @@ The design sandbox is deployed using Firebase Hosting. This guide explains how t
 - Logged into Firebase: `firebase login`
 - Access to the design-sandbox project
 
+### Automated Deployment (Recommended)
+The project uses GitHub Actions for automated deployment:
+- **On Push to Main**: Automatically deploys to production
+- **On Pull Request**: Creates preview deployment
+- **No Manual Steps**: Just push to GitHub and it deploys
+
 ### Quick Deploy
 ```bash
 # Build and deploy in one command
@@ -131,6 +137,12 @@ firebase hosting:channel:list
 - Changes are immediately live after deployment
 - No approval process required (for now)
 
+### GitHub Actions Workflow
+- **Automatic Deployment**: Push to main branch triggers deployment
+- **Preview Deployments**: Pull requests get preview URLs
+- **Service Account**: Firebase service account stored as GitHub secret
+- **Build Process**: Runs `npm run build` before deployment
+
 ### Best Practices
 1. **Test Locally First**: Always test changes locally before deploying
 2. **Small Increments**: Deploy frequently with small changes
@@ -181,9 +193,10 @@ firebase hosting:releases:rollback VERSION_ID
 ```bash
 npm run dev          # Start development
 npm run build        # Build for production
-npm run deploy       # Build and deploy
-firebase deploy      # Deploy only
+npm run deploy       # Build and deploy (manual)
+firebase deploy      # Deploy only (manual)
 firebase serve       # Serve locally
+git push origin main # Deploy automatically (recommended)
 ```
 
 ### URLs
